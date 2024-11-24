@@ -2,6 +2,8 @@
 
 ![CI](https://github.com/MaryaAd/ahj-homework6/actions/workflows/web.yml/badge.svg)
 
+https://maryaad.github.io/ahj-homework6/
+
 Правила сдачи задания:
 
 1. **Важно**: в рамках этого ДЗ нужно использовать yarn (поэтому файла `package-lock.json` в репозитории быть не должно)
