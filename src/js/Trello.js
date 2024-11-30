@@ -1,4 +1,4 @@
-import Data from './Data';
+import Data from "./Data";
 
 export default class Trello {
   constructor() {
@@ -12,7 +12,7 @@ export default class Trello {
 
   bindToDOM(container) {
     if (!(container instanceof HTMLElement)) {
-      throw new Error('container is not HTMLElement');
+      throw new Error("container is not HTMLElement");
     }
     this.container = container;
   }
@@ -24,55 +24,67 @@ export default class Trello {
   }
 
   redrawDOM() {
-    if (document.querySelector('[data-id="111111"]')) document.querySelector('[data-id="111111"]').remove();
-    if (document.querySelector('[data-id="000000"]')) document.querySelector('[data-id="000000"]').remove();
+    if (document.querySelector('[data-id="111111"]'))
+      document.querySelector('[data-id="111111"]').remove();
+    if (document.querySelector('[data-id="000000"]'))
+      document.querySelector('[data-id="000000"]').remove();
     this.redrawColumn(this.container.querySelector('[data-name="todo"]'));
     this.redrawColumn(this.container.querySelector('[data-name="progress"]'));
     this.redrawColumn(this.container.querySelector('[data-name="done"]'));
-    document.body.style.cursor = 'auto';
+    document.body.style.cursor = "auto";
   }
 
   toAppoint() {
-    this.container.addEventListener('click', this.onClick);
+    this.container.addEventListener("click", this.onClick);
   }
 
   onClick(evt) {
-    if (evt.target.className === 'col__add' || evt.target.className === 'col__addText') {
+    if (
+      evt.target.className === "col__add" ||
+      evt.target.className === "col__addText"
+    ) {
       return this.onColAddClick(evt);
     }
-    if (evt.target.className === 'add__cancel') {
+    if (evt.target.className === "add__cancel") {
       return this.onColAddingCancelClick(evt);
     }
-    if (evt.target.className === 'add__button') {
+    if (evt.target.className === "add__button") {
       return this.addCard(evt);
     }
-    if (evt.target.className === 'card__delete') {
+    if (evt.target.className === "card__delete") {
       return this.deleteCard(evt);
     }
-    if (evt.target.className === 'card__subBtn') {
-      return evt.target.closest('.col__card').querySelector('.card__subMenu').classList.toggle('d_none');
+    if (evt.target.className === "card__subBtn") {
+      return evt.target
+        .closest(".col__card")
+        .querySelector(".card__subMenu")
+        .classList.toggle("d_none");
     }
     return false;
   }
 
   deleteCard(evt) {
-    const targetID = evt.target.closest('.col__card').dataset.id;
-    const container = evt.target.closest('.col__content');
+    const targetID = evt.target.closest(".col__card").dataset.id;
+    const container = evt.target.closest(".col__content");
     this.data.delete(targetID, container.dataset.name);
     this.redrawColumn(container);
     this.data.saveState();
   }
 
   addCard(evt) {
-    this.textarea = evt.target.closest('.col__footer').querySelector('.add__textarea');
+    this.textarea = evt.target
+      .closest(".col__footer")
+      .querySelector(".add__textarea");
     const title = this.textarea.value;
-    const colContent = evt.target.closest('.trello__col').querySelector('.col__content');
+    const colContent = evt.target
+      .closest(".trello__col")
+      .querySelector(".col__content");
 
     if (title) {
       this.data.create(colContent.dataset.name, title);
       this.redrawColumn(colContent);
-      this.textarea.value = '';
-      this.adding.classList.add('d_none');
+      this.textarea.value = "";
+      this.adding.classList.add("d_none");
       this.data.saveState();
     }
   }
@@ -80,34 +92,43 @@ export default class Trello {
   redrawColumn(column) {
     this.column = column;
     const prop = column.dataset.name;
-    this.column.innerHTML = '';
+    this.column.innerHTML = "";
     this.data.memory[prop].forEach((e) => {
-      this.column.insertAdjacentHTML('beforeend', Trello.cardMarkUP(e.text, e.id));
+      this.column.insertAdjacentHTML(
+        "beforeend",
+        Trello.cardMarkUP(e.text, e.id),
+      );
       this.checkScroll(column);
     });
   }
 
   checkScroll(column) {
     this.column = column;
-    const scroll = this.column.closest('.trello__col').querySelector('.scroll');
+    const scroll = this.column.closest(".trello__col").querySelector(".scroll");
     if (this.column.offsetHeight >= 555) {
-      scroll.classList.remove('d_none');
+      scroll.classList.remove("d_none");
       return;
     }
-    scroll.className = 'scroll d_none';
+    scroll.className = "scroll d_none";
   }
 
   onColAddingCancelClick(evt) {
-    this.adding.classList.add('d_none');
-    this.textarea = evt.target.closest('.col__footer').querySelector('.add__textarea');
-    this.textarea.value = '';
+    this.adding.classList.add("d_none");
+    this.textarea = evt.target
+      .closest(".col__footer")
+      .querySelector(".add__textarea");
+    this.textarea.value = "";
   }
 
   onColAddClick(evt) {
-    [...this.container.querySelectorAll('.col__adding')].forEach((e) => e.classList.add('d_none'));
-    this.adding = evt.target.closest('.col__footer').querySelector('.col__adding');
-    this.adding.classList.remove('d_none');
-    const textarea = this.adding.querySelector('.add__textarea');
+    [...this.container.querySelectorAll(".col__adding")].forEach((e) =>
+      e.classList.add("d_none"),
+    );
+    this.adding = evt.target
+      .closest(".col__footer")
+      .querySelector(".col__adding");
+    this.adding.classList.remove("d_none");
+    const textarea = this.adding.querySelector(".add__textarea");
     textarea.focus();
   }
 
